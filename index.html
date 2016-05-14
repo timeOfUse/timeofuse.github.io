@@ -6,6 +6,13 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,600,700&subset=latin,latin-ext">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:500">
 <script type="text/javascript" src="d3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="jquery.panelSnap.js"></script>
+<script>
+  jQuery(function($) {
+    $('body').panelSnap();
+  });
+</script>
 
 <style type="text/css">
 .clear-button {
@@ -62,17 +69,118 @@
 </style>
 
 <body class="grid">
-	<div class="header grid__item one-whole"></div>
-	<div class="content grid__item one-whole grid">
-		<div class="grid--center vis">
-			<h1 class="vis__title">Time of Use</h1>
-			
-		</div>
-	</div>
-	<div class="footer grid__item one-whole"></div>
-	<div id="thegraph"></div>
+  <section class="intro grid__item one-whole Vblue">
+    <div class="center">
+        <script>
+          $( document ).ready(function() {
+            $(".second").hide();
+            $(".third").hide();
+            $('.greeting').hide();
+            $('.first input').keyup(function (e) {
+              if (e.keyCode == 13) {
+                $(".first").hide();
+                $(".second").show();
+                $('.greeting').fadeIn(1000, function(){
+                    $(this).show();
+                });
+                $('.greeting').fadeOut(3000, function(){
+                    $(this).hide();
+                });
+              }
+            });
+            $('.second input').keyup(function (e) {
+              if (e.keyCode == 13) {
+                $(".first").hide();
+                $(".second").hide();
+                $(".third").show();
+              }
+            });
+            $('.third #yes').on('click', function (e) {
+                // Preventing default action of the event
+                event.preventDefault();
+                $(".first").hide();
+                $(".second").hide();
+                //$(".third").fadeOut(1000);
+                //$(".intro").css("padding","0");
+                //panelsnap:start:who;
+
+                // Getting the height of the document
+                var n = $(document).height();
+                $('html, body').animate({ scrollTop: 500 }, 500);
+                $('.personC').hover();
+            });
+
+          });
+        </script>
+        <div class="first">
+          <h1>
+            What's your name?
+          </h1>
+          <input></input>
+        </div>
+        <div class="second">
+          <p class="greeting">
+            Super to meet you!
+          </p>
+          <h1>
+            Where do you live?
+          </h1>
+          <input></input>
+        </div>
+        <div class="third">
+          <h1>
+            Do you pay <span>PG&E</span>?
+          </h1>
+          <input id="no" type="checkbox" />
+          <label for="no">No</label>
+          <input id="yes" type="checkbox" />
+          <label for="yes">Yes</label>
+        </div>
+      </div>
+  </section>
+
+  <section class="who grid__item one-whole blue">
+    <script>
+      $( document ).ready(function() {
+        $('.personA').hover(function(){
+          $('.personA .desc').toggleClass('hoverClass');
+        });
+
+        $('.personB').hover(function(){
+          $('.personB .desc').toggleClass('hoverClass');
+        });
+
+        $('.personC').hover(function(){
+          $('.personC .desc').toggleClass('hoverClass');
+        });
+      });
+    </script>
+    <div class="grid grid--center">
+      <div class="person personA grid__item one-fourth">
+        <img src="images/old.png" />
+        <div class="desc"><p>Have someone at home during the day.</p></div>
+      </div>
+      <div class="person personB grid__item one-fourth">
+        <img src="images/biz.png" />
+        <div class="desc"><p>Out working 9 to 5, higher use in the evening.</p></div>
+      </div>
+      <div class="person personC grid__item one-fourth">
+        <img src="images/icon_Electric.gif" />
+        <div class="desc">Whoa, you've got a huge load at night!</div>
+      </div>
+    </div>
+    
+    <div class="pick"></div>
+  </section>
+
+	<section class="vis grid__item one-whole neut">
+		<div id="thegraph" class="lightgreen"></div>
+	</section>
+
+  <section class="vis grid__item one-whole orange">
+    <h1>Are you ready to go solar??</h1>
+  </section>
 </body>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script type="text/javascript" src="makeitwork.js"></script>
 </html>
