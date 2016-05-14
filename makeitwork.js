@@ -9,8 +9,8 @@ var parsedData;
 var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S").parse;
 
 // a scale for the time
-var time_scale = d3.time.scale().nice().range([0, width])
-.domain([parseDate('2016-05-12T00:00:00'), parseDate('2016-05-13T00:00:00')]);
+var time_scale = d3.time.scale().range([0, width]);
+// .domain([parseDate('2016-05-12T00:00:00'), parseDate('2016-05-13T00:00:00')]);
 
 // Scale for power demand
 var power_scale = d3.scale.linear().range([height, 0]);
@@ -38,7 +38,7 @@ var svg = d3.select("#thegraph").append("svg")
 
 //Show x axis
 svg.append("g")
-    .attr("class", "x axis")
+    .attr("class", "xAxis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis);
 
@@ -64,6 +64,7 @@ svg.append("g")
 //     .attr("height", height);
 
 // Load the data
+var myYDomain, myXDomain;
 url = "https://utilityapi.com/api/services/48492/intervals.json?start=2016-05-12&end=2016-05-13&access_token=3f7a4d2a86a34f958e63e8e566da57d7"
 d3.json(url, function(error, data) {
 
@@ -73,10 +74,15 @@ data.forEach(function(d) {
     d.values = {time: d.interval_start, data: d.interval_kW}
 });
 
-parsedData = data
+parsedData = data;
 
-var myYDomain = d3.extent(data, function(d) { return d.interval_kW; })
+myYDomain = d3.extent(data, function(d) { return d.interval_kW; })
 power_scale.domain(myYDomain);
+svg.select(".yAxis").call(yAxis);
+
+myXDomain = d3.extent(data, function(d) { return d.interval_start; })
+time_scale.domain(myXDomain);
+svg.select(".xAxis").call(xAxis);
 
 // select all locations and bound group to non existant location
 power_demand_svg = svg.selectAll(".power_curve")
@@ -88,5 +94,6 @@ power_demand_svg = svg.selectAll(".power_curve")
 power_demand_svg.append("path")
     .attr("class", "line")
     // .attr("clip-path", "url(#clip)")
-    .attr("d", function(d) { return power_demand_line(d.values); });
+    .attr("d", function(d) {
+    	return power_demand_line(d.values); });
 });
