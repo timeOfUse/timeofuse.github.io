@@ -61,11 +61,16 @@ svg.append("defs")
     .attr("width", width)
     .attr("height", height);
 
+// Initialize slider
+var slider = d3.slider().min(0).max(100).ticks(10).showRange(true).value(50);
+// Render the slider in the div
+d3.select('#slider').call(slider);
+
 // Load the data
 var myYDomain, myXDomain;
 var toplot = [];
 var mydata = [];
-url = "https://utilityapi.com/api/services/48492/intervals.json?start=2016-05-12&end=2016-05-13&access_token=3f7a4d2a86a34f958e63e8e566da57d7"
+url = "https://utilityapi.com/api/services/48492/intervals.json?start=2016-05-12T00:00:00%2D07:00&end=2016-05-13T07:00:00%2D07:00&access_token=3f7a4d2a86a34f958e63e8e566da57d7"
 d3.json(url, function(error, data) {
 
 // parsing the date in d3 format
