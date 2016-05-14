@@ -62,9 +62,13 @@ svg.append("defs")
     .attr("height", height);
 
 // Initialize slider
-var slider = d3.slider().min(0).max(100).ticks(10).showRange(true).value(50);
+var slider = d3.slider().min(0).max(100).ticks(10).showRange(true).value(50).callback(function(evt) {
+        console.log('callback: ' self.slider.value());
+      });
+
 // Render the slider in the div
 d3.select('#slider').call(slider);
+//d3.slider().on("slide", function(evt, value) {console.log(value)});
 
 // Load the data
 var myYDomain, myXDomain;
