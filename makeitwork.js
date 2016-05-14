@@ -73,7 +73,14 @@ var toplot2 = [];
 var mydata = [];
 var sum = 0;
 var sumpeak = 0;
-url = "https://utilityapi.com/api/services/48492/intervals.json?start=2016-05-12T00:00:00%2D07:00&end=2016-05-13T07:00:00%2D07:00&access_token=3f7a4d2a86a34f958e63e8e566da57d7"
+var pcost = 0.28619;
+var opcost = 0.21061;
+var oldcost = 0;
+var uid = '48492';
+// var uid = "5350";
+var token = '3f7a4d2a86a34f958e63e8e566da57d7';
+// var token = "opendatatoken";
+url = "https://utilityapi.com/api/services/" + uid + "/intervals.json?start=2016-05-12T00:00:00%2D07:00&end=2016-05-13T07:00:00%2D07:00&access_token=" + token;
 d3.json(url, function(error, data) {
 
 // parsing the date in d3 format
@@ -96,8 +103,19 @@ for (i = 0; i < mydata[1].value.length; i++)
         sum = sum + mydata[1].value[i].data;
 }
 
+
+for (i = 0; i < mydata[0].value.length; i++)
+{
+    if ((mydata[0].value[i].time.getHours()) >= 15
+        && (mydata[0].value[i].time.getHours()) <= 20) {
+        oldcost = oldcost + pcost * mydata[0].value[i].data;
+    } else {
+        oldcost = oldcost + opcost * mydata[0].value[i].data;
+    }
+}
+oldcost = oldcost * 30;
+
 slider = d3.slider().min(0).max(50).ticks(10).showRange(true).value(100 * sumpeak / sum).callback(function(evt) {
-        console.log('callback: ' + self.slider.value());
         update_power_demand(self.slider.value())
       });
 // Render the slider in the div
@@ -125,6 +143,7 @@ power_demand_svg.append("path")
     	return power_demand_line(d.value); })
     .style("stroke", function(d) { return d.color; });
 });
+
 
 function update_power_demand(slider_value){
 	transitionTime = 0;
@@ -155,4 +174,22 @@ function update_power_demand(slider_value){
 	power_demand_svg.select(".line")
 	  .transition(transitionTime)
 	  .attr("d", function(d) { return power_demand_line(d.value); });
+
+	 cost();
+	 console.log(newcost)
+}
+
+
+function cost() {
+	newcost = 0
+	for (i = 0; i < mydata[0].value.length; i++)
+	{
+	    if ((mydata[1].value[i].time.getHours()) >= 15
+	        && (mydata[1].value[i].time.getHours()) <= 20) {
+	        newcost = newcost + pcost * mydata[1].value[i].data;
+	    } else {
+	        newcost = newcost + opcost * mydata[1].value[i].data;
+	    }
+	}
+	newcost = newcost * 30;
 }
