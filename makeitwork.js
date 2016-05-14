@@ -28,7 +28,7 @@ var power_demand_line = d3.svg.line()
     .y(function(d) { return power_scale(d.data); });
 
 // Add a SVG which will contain the parallel coordinates
-var svg = d3.select("#the_graph").append("svg")
+var svg = d3.select("#thegraph").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + 20)
   	.append("g")
@@ -61,6 +61,7 @@ svg.append("defs")
     .attr("width", width)
     .attr("height", height);
 
+console.log('Hello')
 // Load the data
 // d3.csv("../../../someMoreData/parallel.csv", function(error, data) {
 // }
