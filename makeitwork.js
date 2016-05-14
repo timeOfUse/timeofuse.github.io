@@ -4,11 +4,11 @@ var margin = {top: 30, right: 50, bottom: 70, left: 100},
     height = 500 - margin.top - margin.bottom;
 
 // Parsing date
-var parseDate = d3.time.format("%m/%d %H:%M:%S").parse;
+var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S").parse;
 
 // a scale for the time
-var time_scale = d3.time.scale().nice().range([0, width])
-.domain([parseDate('5/13 00:00:00'), parseDate('5/14 23:00:00')]);
+var time_scale = d3.time.scale().range([0, width]);
+// .domain([parseDate('2016-05-12T00:00:00'), parseDate('2016-05-13T00:00:00')]);
 
 // Scale for power demand
 var power_scale = d3.scale.linear().range([height, 0]);
@@ -36,7 +36,7 @@ var svg = d3.select("#thegraph").append("svg")
 
 //Show x axis
 svg.append("g")
-    .attr("class", "x axis")
+    .attr("class", "xAxis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis);
 
@@ -56,12 +56,140 @@ svg.append("g")
 // append clip path for lines plotted, hiding those part out of bounds
 svg.append("defs")
     .append("clipPath") 
-    .attr("id", "clipLoad")
+    .attr("id", "clip")
     .append("rect")
     .attr("width", width)
     .attr("height", height);
 
-console.log('Hello')
+// Initialize slider
+var slider;
+
+//d3.slider().on("slide", function(evt, value) {console.log(value)});
+
 // Load the data
-// d3.csv("../../../someMoreData/parallel.csv", function(error, data) {
-// }
+var myYDomain, myXDomain, power_demand_svg;
+var toplot = [];
+var toplot2 = [];
+var mydata = [];
+var sum = 0;
+var sumpeak = 0;
+var pcost = 0.28619;
+var opcost = 0.21061;
+var oldcost = 0;
+var uid = '48492';
+// var uid = "5350";
+var token = '3f7a4d2a86a34f958e63e8e566da57d7';
+// var token = "opendatatoken";
+url = "https://utilityapi.com/api/services/" + uid + "/intervals.json?start=2016-05-12T00:00:00%2D07:00&end=2016-05-13T07:00:00%2D07:00&access_token=" + token;
+d3.json(url, function(error, data) {
+
+// parsing the date in d3 format
+data.forEach(function(d) {
+    d.interval_start = parseDate(d.interval_start.substring(0, 19)),
+    toplot.push({time: d.interval_start, data: d.interval_kW})
+    toplot2.push({time: d.interval_start, data: d.interval_kW})
+});
+
+mydata.push({color: "blue", value: toplot})
+mydata.push({color: "red", value: toplot2})
+
+// Initialize ratio
+for (i = 0; i < mydata[1].value.length; i++)
+{
+    if ((mydata[1].value[i].time.getHours()) >= 15
+        && (mydata[1].value[i].time.getHours()) <= 20) {
+        sumpeak = sumpeak + mydata[1].value[i].data;
+    }
+        sum = sum + mydata[1].value[i].data;
+}
+
+
+for (i = 0; i < mydata[0].value.length; i++)
+{
+    if ((mydata[0].value[i].time.getHours()) >= 15
+        && (mydata[0].value[i].time.getHours()) <= 20) {
+        oldcost = oldcost + pcost * mydata[0].value[i].data;
+    } else {
+        oldcost = oldcost + opcost * mydata[0].value[i].data;
+    }
+}
+oldcost = oldcost * 30;
+
+slider = d3.slider().min(0).max(50).ticks(10).showRange(true).value(100 * sumpeak / sum).callback(function(evt) {
+        update_power_demand(self.slider.value())
+      });
+// Render the slider in the div
+d3.select('#slider').call(slider);
+
+// myYDomain = d3.extent(data, function(d) { return d.interval_kW; })
+power_scale.domain([0, 0.6]);
+svg.select(".yAxis").call(yAxis);
+
+myXDomain = d3.extent(data, function(d) { return d.interval_start; })
+time_scale.domain(myXDomain);
+svg.select(".xAxis").call(xAxis);
+
+// select all locations and bound group to non existant location
+power_demand_svg = svg.selectAll(".power_curve")
+                .data(mydata)
+                .enter().append("g")
+                .attr("class", "power_curve");
+
+// in each group append a path generator for lines and give it the bounded data 
+power_demand_svg.append("path")
+    .attr("class", "line")
+    .attr("clip-path", "url(#clip)")
+    .attr("d", function(d) {
+    	return power_demand_line(d.value); })
+    .style("stroke", function(d) { return d.color; });
+});
+
+
+function update_power_demand(slider_value){
+	transitionTime = 0;
+	roriginal = sumpeak / sum;
+	rnew = slider_value / 100;
+
+	for (i = 0; i < mydata[1]['value'].length; i++){
+
+        if ((mydata[1].value[i].time.getHours()) >= 15
+            && (mydata[1].value[i].time.getHours()) <= 20) {
+            mydata[1].value[i].data = rnew / roriginal * mydata[0].value[i].data;
+        }
+        else
+        {
+            mydata[1].value[i].data = (1 - rnew) / (1 - roriginal) * mydata[0].value[i].data;
+        }
+    }
+
+	// // Update y axis with new data
+	// myYDomain1 = d3.extent(mydata[0].value, function(d) { return d.data; })
+	// myYDomain2 = d3.extent(mydata[1].value, function(d) { return d.data; })
+	// minY = d3.min([myYDomain1[0], myYDomain2[0]])
+	// maxY = d3.max([myYDomain1[1], myYDomain2[1]])
+	// power_scale.domain([minY, maxY]);
+	// svg.select(".yAxis").call(yAxis);
+
+	// Update line
+	power_demand_svg.select(".line")
+	  .transition(transitionTime)
+	  .attr("d", function(d) { return power_demand_line(d.value); });
+
+	 cost();
+	 console.log(newcost)
+}
+
+
+function cost() {
+	newcost = 0
+	for (i = 0; i < mydata[0].value.length; i++)
+	{
+	    if ((mydata[1].value[i].time.getHours()) >= 15
+	        && (mydata[1].value[i].time.getHours()) <= 20) {
+	        newcost = newcost + pcost * mydata[1].value[i].data;
+	    } else {
+	        newcost = newcost + opcost * mydata[1].value[i].data;
+	    }
+	}
+	newcost = newcost * 30;
+}
