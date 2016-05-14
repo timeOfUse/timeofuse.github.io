@@ -56,12 +56,34 @@ svg.append("g")
 // append clip path for lines plotted, hiding those part out of bounds
 svg.append("defs")
     .append("clipPath") 
-    .attr("id", "clipLoad")
+    .attr("id", "clip")
     .append("rect")
     .attr("width", width)
     .attr("height", height);
 
-console.log('Hello')
 // Load the data
-// d3.csv("../../../someMoreData/parallel.csv", function(error, data) {
-// }
+d3.csv("data.csv", function(error, data) {
+
+// parsing the date in d3 format
+data.forEach(function(d) {
+    d.Time = parseDate(d.Time);
+    d.values = {time: d.Time, data: d.Electricity]}
+})
+
+var myXDomain = d3.extent(data, function(d) { return d.Time; })
+x.domain(myXDomain);
+
+var myYDomain = d3.extent(data, function(d) { return d.Electricity; })
+y.domain(myYDomain);
+
+// select all locations and bound group to non existant location
+power_demand_svg = svg.selectAll(".power_curve")
+                .data(locations1)
+                .enter().append("g")
+                .attr("class", "power_curve");
+// in each group append a path generator for lines and give it the bounded data 
+power_demand_svg.append("path")
+    .attr("class", "line")
+    .attr("clip-path", "url(#clip)")
+    .attr("d", function(d) { return power_demand_line(d.values); });
+}
