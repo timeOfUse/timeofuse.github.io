@@ -6,6 +6,60 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,600,700&subset=latin,latin-ext">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:500">
 
+<style type="text/css">
+.clear-button {
+  font: 14px sans-serif;
+  cursor: pointer;
+}
+
+.background path {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  stroke: steelblue;
+}
+
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.container {
+  float: bottom;
+}
+
+
+.yAxis line,
+.yAxis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.yAxis text {
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
+</style>
+
 <body class="grid">
 	<div class="header grid__item one-whole"></div>
 	<div class="content grid__item one-whole grid">
@@ -14,8 +68,10 @@
 			
 		</div>
 	</div>
+	</div id="the_graph"></div>
 	<div class="footer grid__item one-whole"></div>
 </body>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="makeitwork.js"></script>
