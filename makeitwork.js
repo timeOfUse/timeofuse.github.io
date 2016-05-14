@@ -63,7 +63,7 @@ svg.append("defs")
 
 // Initialize slider
 var slider = d3.slider().min(0).max(100).ticks(10).showRange(true).value(50).callback(function(evt) {
-        console.log('callback: ' self.slider.value());
+        console.log('callback: ' + self.slider.value());
       });
 
 // Render the slider in the div
@@ -83,7 +83,8 @@ data.forEach(function(d) {
     toplot.push({time: d.interval_start, data: d.interval_kW})
 });
 
-mydata.push(toplot)
+mydata.push({color: "blue", value: toplot})
+mydata.push({color: "red", value: toplot.slice(0)})
 
 myYDomain = d3.extent(data, function(d) { return d.interval_kW; })
 power_scale.domain(myYDomain);
@@ -104,5 +105,8 @@ power_demand_svg.append("path")
     .attr("class", "line")
     .attr("clip-path", "url(#clip)")
     .attr("d", function(d) {
-    	return power_demand_line(d); });
+    	return power_demand_line(d.value); })
+    .style("stroke", function(d) { return d.color; });
 });
+
+function 
