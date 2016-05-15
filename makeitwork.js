@@ -168,6 +168,7 @@ power_demand_svg.append("rect")
 power_demand_svg.append("text")
     .attr("x", width + (margin.right/3) + 15 - 80) 
     .attr("y", function (d, i) { return (30)+i*(30) + 4; })
+    .attr("font-size", "16px")
     .text(function(d) { return d.description; }); 
 
 });
