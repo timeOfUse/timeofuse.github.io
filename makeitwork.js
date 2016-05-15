@@ -91,8 +91,8 @@ data.forEach(function(d) {
     toplot2.push({time: d.interval_start, data: d.interval_kW})
 });
 
-mydata.push({color: "#5c5c3d", value: toplot})
-mydata.push({color: "red", value: toplot2})
+mydata.push({color: "#5c5c3d", value: toplot, 'description': 'Today'})
+mydata.push({color: "red", value: toplot2, 'description': 'Tomorrow'})
 
 // Initialize ratio
 for (i = 0; i < mydata[1].value.length; i++)
@@ -152,6 +152,24 @@ power_demand_svg.append("path")
     	return power_demand_line(d.value); })
     .style("stroke", function(d) { return d.color; })
     .attr("stroke-width", 5);
+
+power_demand_svg.append("rect")
+    .attr("width", 30)
+    .attr("height", 15)                                    
+    .attr("x", width + (margin.right/3) - 100) 
+    .attr("y", function (d, i) { return (30)+i*(30) - 8; })  // spacing
+    .attr("fill",function(d) {
+        return d.color; // If array key "visible" = true then color rect, if not then make it grey 
+        })
+    .attr("class", "legend-box")
+    .attr("stroke", "#000000")
+
+
+power_demand_svg.append("text")
+    .attr("x", width + (margin.right/3) + 15 - 80) 
+    .attr("y", function (d, i) { return (30)+i*(30) + 4; })
+    .text(function(d) { return d.description; }); 
+
 });
 
 
