@@ -91,7 +91,7 @@ data.forEach(function(d) {
     toplot2.push({time: d.interval_start, data: d.interval_kW})
 });
 
-mydata.push({color: "blue", value: toplot})
+mydata.push({color: "#5c5c3d", value: toplot})
 mydata.push({color: "red", value: toplot2})
 
 // Initialize ratio
@@ -117,6 +117,7 @@ for (i = 0; i < mydata[0].value.length; i++)
 oldcost = oldcost * 30;
 
 result_sentence = svg.append("text")
+   .attr("id", "meantext")
    .attr("x", 800)
    .attr("y", 30)
    .attr("dy", ".71em")
@@ -149,7 +150,8 @@ power_demand_svg.append("path")
     .attr("clip-path", "url(#clip)")
     .attr("d", function(d) {
     	return power_demand_line(d.value); })
-    .style("stroke", function(d) { return d.color; });
+    .style("stroke", function(d) { return d.color; })
+    .attr("stroke-width", 5);
 });
 
 
@@ -183,12 +185,13 @@ function update_power_demand(slider_value){
 	  .transition(transitionTime)
 	  .attr("d", function(d) { return power_demand_line(d.value); });
 
-	 cost();
-	 console.log(newcost)
+	cost();
+	console.log(newcost)
 
-	svg.selectAll(".text").remove()
+	d3.select("#meantext").remove()
 
 	result_sentence = svg.append("text")
+	   .attr("id", "meantext")
 	   .attr("x", 800)
 	   .attr("y", 30)
 	   .attr("dy", ".71em")
