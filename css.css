@@ -143,15 +143,22 @@ input[type="checkbox"]:checked + label:nth-child(n):before {
 	height:730px;
 }
 
-.personA img, .personB img, .personC img{
+.person{
 	width: 200px;
     height: 200px;
+        margin: 15px;
+}
+
+.personA {
+	background:url('images/old.png') 0 0 /200px 200px;
 }
 
 .personB{
+	background:url('images/biz.png') 0 0 /200px 200px;
 }
 
 .personC{
+	background:url('images/icon_Electric.gif') 0 0 /200px 200px;
 }
 
 .greeting{
@@ -166,12 +173,22 @@ input[type="checkbox"]:checked + label:nth-child(n):before {
 .personA .desc, .personB .desc, .personC .desc{
 	transition: all 0.5s ease;
 	display:none;
-	width: 200px;
+	width: 170px;
     text-align: center;
+    margin:220px 0 0 0;
 }
 
 .desc.hoverClass {
 	display:block;
+}
+
+.pick{
+	margin: 150px auto 0;
+    width: 545px;
+}
+
+.agree{
+	text-align: center;
 }
 
 
