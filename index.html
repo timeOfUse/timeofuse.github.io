@@ -43,6 +43,7 @@
 .xAxis text {
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
   cursor: move;
+  font-size: 65%;
 }
 
 .line {
@@ -66,6 +67,7 @@
 .yAxis text {
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
   cursor: move;
+  font-size: 65%;
 }
 </style>
 
@@ -77,6 +79,7 @@
             $(".second").hide();
             $(".third").hide();
             $('.greeting').hide();
+            $('.pick').hide();
             $('.first input').keyup(function (e) {
               if (e.keyCode == 13) {
                 $(".first").hide();
@@ -110,6 +113,11 @@
                 $('html, body').animate({ scrollTop: 500 }, 500);
                 $('.personC').hover();
             });
+            //$('.agree #yes').on('click', function (e) {
+                //event.preventDefault();
+                //var n = $(document).height();
+                //$('html, body').animate({ scrollTop: 1600 }, 500);
+            //});
 
           });
         </script>
@@ -154,24 +162,37 @@
         $('.personC').hover(function(){
           $('.personC .desc').toggleClass('hoverClass');
         });
+        $('.personC').on('click',function(){
+          $('.pick').fadeIn(1000, function(){
+              $(this).show();
+          });
+          $('.personC').unbind('mouseenter mouseleave');
+          $('.personC .desc').addClass('hoverClass');
+        });
       });
     </script>
     <div class="grid grid--center">
       <div class="person personA grid__item one-fourth">
-        <img src="images/old.png" />
         <div class="desc"><p>Have someone at home during the day.</p></div>
       </div>
       <div class="person personB grid__item one-fourth">
-        <img src="images/biz.png" />
         <div class="desc"><p>Out working 9 to 5, higher use in the evening.</p></div>
       </div>
       <div class="person personC grid__item one-fourth">
-        <img src="images/icon_Electric.gif" />
         <div class="desc">Whoa, you've got a huge load at night!</div>
       </div>
     </div>
     
-    <div class="pick"></div>
+    <div class="pick">
+      <h1>We think you're this guy!</h1>
+      <div class="agree">
+          <p>Are we right??</p>
+          <input id="no" type="checkbox" />
+          <label for="no" style="padding-left: 0px; margin-left: -11px;">No</label>
+          <input id="yes" type="checkbox" />
+          <label for="yes">Yes</label>
+        </div>
+    </div>
   </section>
 
 	<section class="vis grid__item one-whole neut">

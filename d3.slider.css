@@ -18,6 +18,7 @@
   position: relative;
   z-index: 1;
   cursor: pointer;
+  margin-top: 50px;
 }
 
 .d3slider-axis path {
